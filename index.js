@@ -228,7 +228,8 @@ function init() {
     gui.add(resetButton, 'Reset Cube');
 
     
-   container.appendChild(gui.domElement);
+    console.log(gui.domElement);
+    container.appendChild(gui.domElement);
 
 
     voltageControl.addEventListener('input', () => {

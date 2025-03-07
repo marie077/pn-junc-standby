@@ -119,6 +119,7 @@ body {
 
 .container, .container2 {
 	display: flex;
+	padding-bottom: 10em;
 	width: 100%;
 	color:#fff;
     position: relative;
