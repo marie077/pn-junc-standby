@@ -152,18 +152,18 @@ function init() {
     container = document.getElementById('three-container-scene-1');
     //scene
     scene = new THREE.Scene();
-	// scene.background = new THREE.Color(0x121212);
-    new RGBELoader()
-    .load(hdrFile, function (texture) {
-        texture.mapping = THREE.EquirectangularReflectionMapping;
-        texture.format = THREE.RGBAFormat; // Ensure it’s fully opaque
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.generateMipmaps = false;
+	scene.background = new THREE.Color(0x121212);
+    // new RGBELoader()
+    // .load(hdrFile, function (texture) {
+    //     texture.mapping = THREE.EquirectangularReflectionMapping;
+    //     texture.format = THREE.RGBAFormat; // Ensure it’s fully opaque
+    //     texture.minFilter = THREE.LinearFilter;
+    //     texture.magFilter = THREE.LinearFilter;
+    //     texture.generateMipmaps = false;
         
-        scene.environment = texture; // Use HDR for lighting
-        scene.background = texture; // Keep background solid black
-    });
+    //     scene.environment = texture; // Use HDR for lighting
+    //     scene.background = texture; // Keep background solid black
+    // });
 
     // document.body.style.backgroundColor = "black"; // Extra security for black bg
 
@@ -195,7 +195,8 @@ function init() {
     scene.add( light );
 
     // GUI
-    gui = new dat.GUI();
+    gui = new dat.GUI({autoPlace: false});
+
     cameraControls = {
         translateZ : 150,
         translateX: 0,
@@ -227,6 +228,7 @@ function init() {
     gui.add(resetButton, 'Reset Cube');
 
     
+   container.appendChild(gui.domElement);
 
 
     voltageControl.addEventListener('input', () => {

@@ -176,7 +176,8 @@ function init() {
     scene.add( light );
 
     // GUI
-    gui = new dat.GUI();
+    gui = new dat.GUI({autoPlace: false});
+
     cameraControls = {
         translateZ : 150,
         translateX: 0,
@@ -215,6 +216,8 @@ function init() {
     // Add a button to reset GUI controls
     gui.add(resetButton, 'Reset Cube');
     
+    container2.appendChild(gui.domElement);
+
 
     // window resize handler
     window.addEventListener( 'resize', onWindowResize);

@@ -32,26 +32,13 @@ body {
     font-size: 1rem;
   }
 
-#three-container-scene-1 {
-	position: relative;
-	padding: 5.5em;
-}
-
-@media (min-width: 1200px) {
-	.container {
-	  max-width: 1140px;
-	}
-	#three-container-scene-1 {
-		max-width: 1140px;
-		height: 600px; 
-	}
-} 
 
 @media (max-width: 992px) {
-	.container {
+	.container, .container2 {
 		display: flex;
 		max-width: 80%;
 		flex-direction: column;
+		padding-bottom: 7em;
 
 	}
 	.col-lg-12 {
@@ -59,59 +46,79 @@ body {
 	  flex: 0 0 100%;
 	  max-width: 100%;
 	}
-	#three-container-scene-1 {
-		width: 50%;
-		max-height: 50%; 
+	#three-container-scene-1, #three-container2-scene-2  {
+		margin: auto;
+		width: 100%;
+		max-height: 100%; 
 	}
 }
 
-@media (min-width: 992px) {
-	.col-lg-10 {
-	  -ms-flex: 0 0 83.333333%;
-	  flex: 0 0 83.333333%;
-	  max-width: 83.333333%;
+@media (min-width: 850px) {
+	#three-container-scene-1{ 
+		margin-left: -4em;
+		width: 100%;
+		max-height: 100%; 
+	}
+
+	#three-container2-scene-2  {
+		margin-left: -4em;
+		width: 100%;
+		max-height: 100%; 
+	}
+
+}
+
+@media (min-width: 450px) {
+	#three-container-scene-1{ 
+		margin-left: -10em;
+		width: 75%;
+		height: 75%; 
+	}
+
+	#three-container2-scene-2  {
+		margin-left: -10em;
+		width: 75%;
+		height: 75%; 
 	}
 }
 
-@media (min-width: 992px) {
-	.col-lg-1 {
-	  -ms-flex: 0 0 8.333333%;
-	  flex: 0 0 8.333333%;
-	  max-width: 8.333333%;
-	}
+
+
+
+.content h1 {
+	font-family: Agency FB;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 36px;
+  line-height: 72px;
+  color: #FFF7AE;
+
 }
 
-@media (min-width: 992px) {
-	.col-lg-4 {
-	  -ms-flex: 0 0 33.333333%;
-	  flex: 0 0 33.333333%;
-	  max-width: 33.333333%;
-	  margin-left: 2em;
-	}
-} 
+.content p {
+  margin-top: 30px;
+  font-family: Bai Jamjuree;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 27px;
+  color: #FFFFFF;
+}
 
-.container {
+.container, .container2 {
 	display: flex;
 	width: 100%;
-	margin: 1em;
+	margin: 5em;
 	color:#fff;
-
-	min-height: 600px;
     position: relative;
 }
 
-.container2 {
-	display: flex;
-	width: 100%;
-	padding-top: 8em;
-	padding-right: 15px;
-	padding-left: 15px;
-	margin-right: 5em;
-	margin-left: 5em;
-	color:#fff;
+.container #three-container-scene-1 {
+	margin-left: 4em;
+}
 
-	min-height: 600px;
-    position: relative;
+.container2 #three-container2-scene-2 {
+	margin-left: 4em;
 }
 
 
