@@ -56,7 +56,7 @@
 					<h1> Intro to P-N Junction </h1>
 					<p> Imagine you are inside the p-n junction. Do you see the recombining and generation of holes and electrons? Adjust the voltage levels to view how the holes and electrons respond to charge. </p>	
 					<div id="voltage-range-container">
-						<label for="voltage-range" style ="color:white; padding: 3em" for="voltage">Voltage Level:</label>
+						<label for="voltage-range" style ="color:white;" for="voltage">Voltage Level:</label>
 						<input autocomplete="off" type="range" id="voltage" name="voltage-range" min="-1.4" max="0.4" step="0.01" value=0.0>
 						
 						<span class="range-value-label">
@@ -72,16 +72,30 @@
 			<div class="col-lg-4"> 
 				<h1> P-N Junction + Solar Cell </h1>
 				<p> In a solar cell, the P-N junction plays a crucial role in converting sunlight into electricity. When photons hit the junction, they excite electrons, creating electron-hole pairs. The built-in electric field at the junction separates these charges, directing electrons toward the n-side and holes toward the p-side, generating a current that can be harnessed for power. This photovoltaic effect is the key mechanism behind solar energy harvesting. </p>	
-				<div id="voltage-range-container2">
-					<label for="voltage-range2" style ="color:white; padding: 3em" for="voltage2">Voltage Level:</label>
-					<input autocomplete="off" type="range" id="voltage2" name="voltage-range" min="-1.4" max="0.4" step="0.01" value=0.0>
+				<div class="input-control">
+					<div id="voltage-range-container2">
+						<label for="voltage-range2" style ="color:white;" for="voltage2">Voltage Level:</label>
+						<input autocomplete="off" type="range" id="voltage2" name="voltage-range" min="-1.4" max="0.4" step="0.01" value=0.0>
+						<span class="range-value-label">
+							<br>
+							<span id="range-min-value2">-1.4</span> to                           
+							<span id="range-max-value2">0.4</span>
+						</span>
+						<h1>Voltage:  <span id="myText2"></span></h1>
+					</div>	
 					
-					<span class="range-value-label">
-						<span id="range-min-value2">-1.4</span> to                           
-						<span id="range-max-value2">0.4</span>
-					</span>
-					<h1>Voltage:  <span id="myText2"></span></h1>
-				</div>		
+					<div id="solar-cell-range-container2">
+						<label for="solar-cell-range" style ="color:white;" for="solarcell">Solar Cell Position:</label>
+						<input autocomplete="off" type="range" id="solarcell" name="solarcell-range" min="-30" max="30" step="1" value=0.0>
+						
+						<span class="range-value-label">
+							<br>
+							<span id="range-min-value2">-X</span> to                           
+							<span id="range-max-value2">X</span>
+						</span>
+					</div>	
+				</div>
+
 			</div>
 			<div id="three-container2-scene-2" class="row" style="height: 500px; width: 700px"></div>
 		</div>

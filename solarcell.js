@@ -16,6 +16,7 @@ let voltageLevel;
 let cameraControls;
 let gui;
 const voltageControl = document.getElementById('voltage2');
+const solarPositionControl = document.getElementById('solarcell');
 let minScalar = 0.22;
 let maxScalar = 0.88;
 let cube1;
@@ -97,6 +98,7 @@ let solarCell;
 let trapezoid_top = 20;
 let trapezoid_bottom = 60;
 let trapezoid_height = cubeSize.y;
+let solarPosition = new THREE.Vector3(0,0,0);
 
 // controller states
 const controllerStates = {
@@ -124,11 +126,25 @@ init();
 
 update();
 
+//SOLAR CELL GENERATION
+setInterval(() => {
+    //creates hole/electron pair and adds to generatedPairs array
+    // generatePair();
+    solarGeneratePair();
+}, 500);
+
 setInterval(() => {
     //creates hole/electron pair and adds to generatedPairs array
     // generatePair();
     solarGeneratePair();
 }, 1000);
+
+//GENERATION
+setInterval(() => {
+    //creates hole/electron pair and adds to generatedPairs array
+    generatePair();
+}, 2000);
+
 
  
 function init() {
@@ -204,14 +220,20 @@ function init() {
         camera.rotation.y = MathUtils.degToRad(cameraControls.rotateY);
     });
 
-    // gui.add(voltageLevel, 'x', -1.4, 0.4).name('Voltage (V)').step(0.1).onChange(() => {
-    //     voltage = voltageLevel.x;
-    // });
+    //voltage range control
     voltageControl.addEventListener('input', () => {
         const voltageLevel = parseFloat(voltageControl.value);
         voltage = voltageLevel;
         document.getElementById("myText2").innerHTML = voltage;
      });
+
+     //solar cell position control
+     solarPositionControl.addEventListener('input', ()=> {
+        const solarCellPositionLevel = parseInt(solarPositionControl.value);
+        solarCell.position.x = solarCellPositionLevel;
+    });
+
+
 
     // Add a button to reset GUI controls
     gui.add(resetButton, 'Reset Cube');
@@ -447,6 +469,9 @@ function update() {
         let currentTime = performance.now();
         let time = clock.getDelta()/15;
         scene.remove(innerCube);
+
+       
+        
 
         // console.log("electron #:" + electronSpheres.length);
         // console.log("hole #:" + holeSpheres.length);
@@ -1138,34 +1163,34 @@ function solarGeneratePair() {
 
 //NOT SOLAR CELL GENERATION 
 
-// function generatePair() {
-//     let position = new Vector3(
-//         THREE.MathUtils.randFloat(-cubeSize.x/2 + 1, cubeSize.x/2 - 1), 
-//         THREE.MathUtils.randFloat(-cubeSize.y/2 + 1, cubeSize.y/2 - 1), 
-//         THREE.MathUtils.randFloat(-cubeSize.z/2 + 1, cubeSize.z/2 - 1));
-//     // holes and electron are created at the same position
-//     let hole = createSphereAt(position.clone().add(new THREE.Vector3(2,0,0)), 0xFF3131, false);
-//     let electron = createSphereAt(position.clone(), 0x1F51FF, false);
+function generatePair() {
+    let position = new Vector3(
+        THREE.MathUtils.randFloat(-cubeSize.x/2 + 1, cubeSize.x/2 - 1), 
+        THREE.MathUtils.randFloat(-cubeSize.y/2 + 1, cubeSize.y/2 - 1), 
+        THREE.MathUtils.randFloat(-cubeSize.z/2 + 1, cubeSize.z/2 - 1));
+    // holes and electron are created at the same position
+    let hole = createSphereAt(position.clone().add(new THREE.Vector3(2,0,0)), 0xFF3131, false);
+    let electron = createSphereAt(position.clone(), 0x1F51FF, false);
     
-//     //set initial generation values to hole and electrons
-//     hole.velocity = new THREE.Vector3(-0.02, 0, 0);
-//     electron.velocity =  new THREE.Vector3(0.02, 0, 0);
+    //set initial generation values to hole and electrons
+    hole.velocity = new THREE.Vector3(-0.02, 0, 0);
+    electron.velocity =  new THREE.Vector3(0.02, 0, 0);
 
-//     //generate orb
-//     const orbGeo = new THREE.SphereGeometry(2, 32, 32);
-//     const orbMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5});
-//     const orbSphere = new THREE.Mesh(orbGeo, orbMaterial);
+    //generate orb
+    const orbGeo = new THREE.SphereGeometry(2, 32, 32);
+    const orbMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5});
+    const orbSphere = new THREE.Mesh(orbGeo, orbMaterial);
     
-//     //calculate orb position using midpoint of pair and set position
-//     let midpoint = hole.object.position.clone().add(electron.object.position.clone()).multiplyScalar(0.5);
-//     orbSphere.position.copy(midpoint);
-//     //initial orb opacity level
-//     orbSphere.gradualVal = 0.5;
-//     scene.add(orbSphere);
+    //calculate orb position using midpoint of pair and set position
+    let midpoint = hole.object.position.clone().add(electron.object.position.clone()).multiplyScalar(0.5);
+    orbSphere.position.copy(midpoint);
+    //initial orb opacity level
+    orbSphere.gradualVal = 0.5;
+    scene.add(orbSphere);
 
-//     //generatedPair array [{hole, electron, orbSphere, position}]
-//     generatedPairs.push({hole, electron, orbSphere, position});
-// }
+    //generatedPair array [{hole, electron, orbSphere, position}]
+    generatedPairs.push({hole, electron, orbSphere, position});
+}
 
 function generationAnim() {
     // if a generated pair exists

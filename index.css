@@ -244,3 +244,8 @@ input[type="range"]::-moz-range-thumb {
     border-radius: 5px;
     cursor: pointer;
 }
+
+.input-control {
+	margin-top: 3em;
+	display: flex;
+}
