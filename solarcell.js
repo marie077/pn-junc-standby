@@ -9,6 +9,9 @@ import { XRButton } from 'https://unpkg.com/three@0.163.0/examples/jsm/webxr/XRB
 import { XRControllerModelFactory } from 'https://unpkg.com/three@0.163.0/examples/jsm/webxr/XRControllerModelFactory.js'; 
 import { TextGeometry } from 'https://unpkg.com/three@0.163.0/examples/jsm/geometries/TextGeometry.js';
 import { FontLoader } from 'https://unpkg.com/three@0.163.0/examples/jsm/loaders/FontLoader.js';
+import { RGBELoader } from 'https://unpkg.com/three@0.163.0/examples/jsm/loaders/RGBELoader.js';
+
+const hdrFile = "./assets/black.hdr";
 //scene set up variables and window variables
 let container2, camera, scene, renderer;
 let updateId;
@@ -165,7 +168,17 @@ function init() {
     container2 = document.getElementById('three-container2-scene-2');
     //scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x121212);
+
+    new RGBELoader()
+    .load(hdrFile, function (texture) {
+        console.log("HDR File Loaded Successfully:", hdrFile, texture);
+        scene.background = texture;  // This makes HDR the background
+        scene.environment = texture; // This applies HDR for lighting/reflection        
+    }, undefined, function (error) {
+        console.error("Failed to load HDR file:", error);
+    })
+
+    // scene.background = new THREE.Color(0x121212);
     //camera
     camera = new THREE.PerspectiveCamera( 75, container2.clientWidth / container2.clientHeight, 0.1, 1500);
     camera.position.z = 150;

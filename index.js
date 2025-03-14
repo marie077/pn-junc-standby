@@ -11,7 +11,7 @@ import { TextGeometry } from 'https://unpkg.com/three@0.163.0/examples/jsm/geome
 import { FontLoader } from 'https://unpkg.com/three@0.163.0/examples/jsm/loaders/FontLoader.js';
 import { RGBELoader } from 'https://unpkg.com/three@0.163.0/examples/jsm/loaders/RGBELoader.js';
 
-const hdrFile = "/assets/moonless_golf_1k.hdr";
+const hdrFile = "./assets/black.hdr";
 
 //scene set up variables and window variables
 let container, camera, scene, renderer;
@@ -152,25 +152,21 @@ function init() {
     container = document.getElementById('three-container-scene-1');
     //scene
     scene = new THREE.Scene();
-	scene.background = new THREE.Color(0x121212);
-    // new RGBELoader()
-    // .load(hdrFile, function (texture) {
-    //     texture.mapping = THREE.EquirectangularReflectionMapping;
-    //     texture.format = THREE.RGBAFormat; // Ensure it’s fully opaque
-    //     texture.minFilter = THREE.LinearFilter;
-    //     texture.magFilter = THREE.LinearFilter;
-    //     texture.generateMipmaps = false;
-        
-    //     scene.environment = texture; // Use HDR for lighting
-    //     scene.background = texture; // Keep background solid black
-    // });
-
-    // document.body.style.backgroundColor = "black"; // Extra security for black bg
-
+	// scene.background = new THREE.Color(0x121212);
+    // scene.background = new THREE.Color(0xFFFFFF); // black background
+    new RGBELoader()
+    .load(hdrFile, function (texture) {
+        console.log("HDR File Loaded Successfully:", hdrFile, texture);
+        scene.background = texture;  // This makes HDR the background
+        scene.environment = texture; // This applies HDR for lighting/reflection        
+    }, undefined, function (error) {
+        console.error("Failed to load HDR file:", error);
+    })
 
     //camera
     camera = new THREE.PerspectiveCamera( 75, container.clientWidth / container.clientHeight, 0.1, 1500);
-    camera.position.z = 150;
+    // camera.position.z = 150;
+    camera.position.set(0, 0, 150);
     //renderer
     renderer = new THREE.WebGLRenderer({ alpha: false });
 
@@ -183,6 +179,7 @@ function init() {
 	dolly = new THREE.Object3D();
 	setUpVRControls();
 
+
      // Add explicit size check
      if (!container) {
         console.error('Container not found');
@@ -191,8 +188,15 @@ function init() {
 	
 		
 	//lighting
-    const light = new THREE.AmbientLight( 0xffffff, 3); // soft white light
-    scene.add( light );
+    // const light = new THREE.AmbientLight( 0xffffff, 3); // soft white light
+    // scene.add( light );
+
+    const light = new THREE.AmbientLight( 0xffffff, 1 );  // softer light
+    scene.add(light);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(1, 1, 1).normalize();
+    scene.add(directionalLight);
 
     // GUI
     gui = new dat.GUI({autoPlace: false});
