@@ -138,7 +138,7 @@ body {
 	display: flex;
 	padding-bottom: 10em;
   padding-left: 2em;
-  padding-top: 3em;
+  margin-top: 5em;
 	width: 100%;
 	color:#fff;
     position: relative;
@@ -182,8 +182,7 @@ body {
 
 
 .title-row {
-	margin-top: 10em;
-	margin-bottom: 10em;
+  margin: 10em;
   text-align: center;
 }
 
