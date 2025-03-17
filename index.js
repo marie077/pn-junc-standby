@@ -145,7 +145,6 @@ function init() {
     // scene.background = new THREE.Color(0xFFFFFF); // black background
     new RGBELoader()
     .load(hdrFile, function (texture) {
-        console.log("HDR File Loaded Successfully:", hdrFile, texture);
         scene.background = texture;  // This makes HDR the background
         scene.environment = texture; // This applies HDR for lighting/reflection        
     }, undefined, function (error) {
@@ -221,7 +220,6 @@ function init() {
     gui.add(resetButton, 'Reset Cube');
 
     
-    console.log(gui.domElement);
     container.appendChild(gui.domElement);
 
 
@@ -496,16 +494,18 @@ function update() {
         Recombination.recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, scene, recombination_orbs);
 
         //check if a hole or electron needs to be supplied if they cross only if voltage level is negative
-        if (voltage < 0) {
-            sphereCrossed(electronSpheres, 'e');
-            sphereCrossed(holeSpheres, 'h');
-            // checkGeneratedStatus();
-        }
+        sphereCrossed(electronSpheres, 'e');
+        sphereCrossed(holeSpheres, 'h');
+        // if (voltage < 0) {
+        //     sphereCrossed(electronSpheres, 'e');
+        //     sphereCrossed(holeSpheres, 'h');
+        //     // checkGeneratedStatus();
+        // }
 
         if (voltage > 0) {
             // maintains balance...of 50 max e and h
-            sphereCrossed(electronSpheres, 'e');
-            sphereCrossed(holeSpheres, 'h');
+            // sphereCrossed(electronSpheres, 'e');
+            // sphereCrossed(holeSpheres, 'h');
             if (Recombination.recombinationOccured) {
                 var e_position = new THREE.Vector3(cubeSize.x/2 + 50, 0, 0);
                 var electron = SphereUtil.createSphereAt(e_position, 0x1F51FF, false);
@@ -623,8 +623,6 @@ async function initXR(frame) {
 	controllerGrip1 = xrSession.requestReferenceSpace('local');
 	
 	//debug
-	console.log("number of input sources:" + inputSource.length);
-
     
 }
 
@@ -848,13 +846,13 @@ function sphereCrossed(typeArray, type) {
                 if (spherePosition > innerBoxSize/2) {
                     e_count= e_count+1;
                     if (e_count > numSpheres ) {
-                    e_count= e_count-1;
-                   
-                    var randomIndex = Math.floor(Math.random() * electronSpheres.length);
-                    scene.remove(electronSpheres[randomIndex].object);
-                    electronSpheres[randomIndex].object.geometry.dispose();
-                    electronSpheres[randomIndex].object.material.dispose();
-                    electronSpheres.splice(randomIndex, 1);
+                        e_count= e_count-1;
+                        console.log("removing electron because it reached above:" + numSpheres);
+                        var randomIndex = Math.floor(Math.random() * electronSpheres.length);
+                        scene.remove(electronSpheres[randomIndex].object);
+                        electronSpheres[randomIndex].object.geometry.dispose();
+                        electronSpheres[randomIndex].object.material.dispose();
+                        electronSpheres.splice(randomIndex, 1);
                     }
 
                 }
@@ -863,15 +861,16 @@ function sphereCrossed(typeArray, type) {
                 if (spherePosition < -innerBoxSize/2 ) {
                     h_count= h_count+1;
                     if (h_count > numSpheres ) {
-                        //console.log('h_count=',h_count);
-                    h_count= h_count-1;    
+                            //console.log('h_count=',h_count);
+                        h_count= h_count-1;    
+                        console.log("removing hole because it reached above:" + numSpheres);
 
-                    //remove last electron from the existing electronArray
-                    var randomIndex = Math.floor(Math.random() * holeSpheres.length);
-                    scene.remove(holeSpheres[randomIndex].object);
-                    holeSpheres[randomIndex].object.geometry.dispose();
-                    holeSpheres[randomIndex].object.material.dispose();
-                    holeSpheres.splice(randomIndex, 1);
+                        //remove last electron from the existing electronArray
+                        var randomIndex = Math.floor(Math.random() * holeSpheres.length);
+                        scene.remove(holeSpheres[randomIndex].object);
+                        holeSpheres[randomIndex].object.geometry.dispose();
+                        holeSpheres[randomIndex].object.material.dispose();
+                        holeSpheres.splice(randomIndex, 1);
                     }
                 }
             }

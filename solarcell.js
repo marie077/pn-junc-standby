@@ -539,16 +539,18 @@ function update() {
         Recombination.recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, scene, recombination_orbs);
 
         //check if a hole or electron needs to be supplied if they cross only if voltage level is negative
-        if (voltage < 0) {
-            sphereCrossed(electronSpheres, 'e');
-            sphereCrossed(holeSpheres, 'h');
-            // checkGeneratedStatus();
-        }
+        sphereCrossed(electronSpheres, 'e');
+        sphereCrossed(holeSpheres, 'h');
+        // if (voltage < 0) {
+        //     sphereCrossed(electronSpheres, 'e');
+        //     sphereCrossed(holeSpheres, 'h');
+        //     // checkGeneratedStatus();
+        // }
 
         if (voltage > 0) {
             // maintains balance...of 50 max e and h
-            sphereCrossed(electronSpheres, 'e');
-            sphereCrossed(holeSpheres, 'h');
+            // sphereCrossed(electronSpheres, 'e');
+            // sphereCrossed(holeSpheres, 'h');
             if (Recombination.recombinationOccured) {
                 var e_position = new THREE.Vector3(cubeSize.x/2 + 50, 0, 0);
                 var electron = SphereUtil.createSphereAt(e_position, 0x1F51FF, false);
@@ -828,7 +830,6 @@ function positive_battery_anim() {
 function sphereCrossed(typeArray, type) { 
     var e_count = 0;
     var h_count = 0;
-    
     for (var i = 0; i < typeArray.length; i++) {
         var spherePosition = typeArray[i].object.position.x;
         // added voltage > 0 check too since similar processes occuring for both
@@ -840,7 +841,6 @@ function sphereCrossed(typeArray, type) {
                     //takes out electrons if count exceeds 50 max
                     if (e_count > numSpheres ) {
                         e_count= e_count-1;
-                        //console.log('e_count=',e_count);
                         var position = new THREE.Vector3(cubeSize.x/2 - 5, 0, 0);
                         var electron = SphereUtil.createSphereAt(position, 0x1F51FF, false);
                         // In sphereCrossed
@@ -865,7 +865,6 @@ function sphereCrossed(typeArray, type) {
                     h_count= h_count+1;
                     //removes holes if it exceeds max 50
                     if (h_count > numSpheres ) {
-                            //console.log('h_count=',h_count);
                         h_count= h_count-1;    
                         var position = new THREE.Vector3(-cubeSize.x/2 + 5, 0, 0);
                         var hole = SphereUtil.createSphereAt(position, 0xFF3131, false);
@@ -888,34 +887,25 @@ function sphereCrossed(typeArray, type) {
         //AZAD CODE
         if (voltage === 0 ) {
             if (type == 'e') {
-                if (spherePosition > innerBoxSize/2) {
-                    e_count= e_count+1;
-                    if (e_count > numSpheres ) {
-                    e_count= e_count-1;
-
+                e_count = electronSpheres.length;
+                if (e_count > numSpheres ) {
+                    console.log("SOLAR CELL: removing e from the scene beacuse e went over " + numSpheres);
                     var randomIndex = Math.floor(Math.random() * electronSpheres.length);
                     scene.remove(electronSpheres[randomIndex].object);
                     electronSpheres[randomIndex].object.geometry.dispose();
                     electronSpheres[randomIndex].object.material.dispose();
                     electronSpheres.splice(randomIndex, 1);
-                    }
-
                 }
-
             } else if (type == 'h') {
-                if (spherePosition < -innerBoxSize/2 ) {
-                    h_count= h_count+1;
-                    if (h_count > numSpheres ) {
-                        //console.log('h_count=',h_count);
-                    h_count= h_count-1;   
-
+                h_count= holeSpheres.length;
+                if (h_count > numSpheres ) {
+                    console.log("SOLAR CELL: removing h from the scene beacuse h went over " + numSpheres);
                     //remove last electron from the existing electronArray
                     var randomIndex = Math.floor(Math.random() * holeSpheres.length);
                     scene.remove(holeSpheres[randomIndex].object);
                     holeSpheres[randomIndex].object.geometry.dispose();
                     holeSpheres[randomIndex].object.material.dispose();
                     holeSpheres.splice(randomIndex, 1);
-                    }
                 }
             }
         }

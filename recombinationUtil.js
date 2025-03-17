@@ -94,7 +94,6 @@ export function recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, sc
                     sphere.orbCreated = true;
                     scene.add(sphere.orb);
                     //every recombination orb created should be stored inside here. and anything left has not been removed. 
-                    console.log("orb pushed to array");
                     recombination_orbs.push(sphere.orb);
                 }
                 if (sphere.orb) {
@@ -114,7 +113,6 @@ export function recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, sc
                         sphere.lerpPartner.object.material.color.set(new THREE.Color(0xff9cb0));
                         sphere.orb.material.opacity = 0;
                     }  else {
-                        console.log("orb not removed yet");
                     } 
                     
 
@@ -149,7 +147,6 @@ export function recombinationOrbRemove(recombination_orbs, scene) {
             scene.remove(orb);
             orb.geometry.dispose();
             orb.material.dispose();
-            console.log("orb removed");
             return false; // Exclude the orb from the new array
         });
     }  
