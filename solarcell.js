@@ -198,7 +198,7 @@ function init() {
     renderer.setSize(container2.clientWidth, container2.clientHeight);
     renderer.xr.enabled = true;
     renderer.xr.setReferenceSpaceType('local-floor');
-    initXR();
+    // initXR();
     container2.appendChild( renderer.domElement );
     container2.appendChild(XRButton.createButton(renderer));
     dolly = new THREE.Object3D();
