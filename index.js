@@ -66,7 +66,6 @@ var boltz = [];
 
 //recombination variables
 var minDistance = 30;
-var recombinationOccured = false;
 var e_sphere_outside_depvarion_range = false;
 var h_sphere_outside_depvarion_range = false;
 var recombination_orbs = [];
@@ -494,20 +493,22 @@ function update() {
         Recombination.recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, scene, recombination_orbs);
 
         //check if a hole or electron needs to be supplied if they cross only if voltage level is negative
-        sphereCrossed(electronSpheres, 'e');
-        sphereCrossed(holeSpheres, 'h');
-        // if (voltage < 0) {
-        //     sphereCrossed(electronSpheres, 'e');
-        //     sphereCrossed(holeSpheres, 'h');
-        //     // checkGeneratedStatus();
-        // }
+        // sphereCrossed(electronSpheres, 'e');
+        // sphereCrossed(holeSpheres, 'h');
+        if (voltage < 0) {
+            sphereCrossed(electronSpheres, 'e');
+            sphereCrossed(holeSpheres, 'h');
+            // checkGeneratedStatus();
+        }
 
         if (voltage > 0) {
             // maintains balance...of 50 max e and h
             // sphereCrossed(electronSpheres, 'e');
             // sphereCrossed(holeSpheres, 'h');
-            console.log(Recombination.recombinationOccured);
+            // console.log(Recombination.recombinationOccured);
+            console.log("recombination count when: " + Recombination.recombinationCount);
             if (Recombination.recombinationOccured) {
+                // console.log("recombination occured");
                 var e_position = new THREE.Vector3(cubeSize.x/2 + 50, 0, 0);
                 var electron = SphereUtil.createSphereAt(e_position, 0x1F51FF, false);
                 scene.add(electron.object);
@@ -520,6 +521,7 @@ function update() {
                 hole.value = "h";
                 positiveBatteryElements.push(hole);
                 Recombination.setRecombinationStatus(false);
+                // console.log("length of pos array" + positiveBatteryElements.length);
             }
         }
         
@@ -720,13 +722,15 @@ function negative_battery_anim() {
 }
 
 function positive_battery_anim() {
+    console.log("length of postiive battery elements array:" + positiveBatteryElements.length);
+
     for (var i = positiveBatteryElements.length - 1; i >= 0; i--) {
         var sphere = positiveBatteryElements[i];
         var spherePosition = sphere.object.position;
         if (sphere.value == 'e') {
             if (spherePosition.x < cubeSize.x/2 - 1) {
                 electronSpheres.push({
-                    value: "h",
+                    value: "e",
                     crossReady: true,
                     crossed: false,
                     pause: false,
@@ -849,7 +853,7 @@ function sphereCrossed(typeArray, type) {
                     e_count= e_count+1;
                     if (e_count > numSpheres ) {
                         e_count= e_count-1;
-                        console.log("removing electron because it reached above:" + numSpheres);
+                        // console.log("removing electron because it reached above:" + numSpheres);
                         var randomIndex = Math.floor(Math.random() * electronSpheres.length);
                         scene.remove(electronSpheres[randomIndex].object);
                         electronSpheres[randomIndex].object.geometry.dispose();
@@ -865,7 +869,7 @@ function sphereCrossed(typeArray, type) {
                     if (h_count > numSpheres ) {
                             //console.log('h_count=',h_count);
                         h_count= h_count-1;    
-                        console.log("removing hole because it reached above:" + numSpheres);
+                        // console.log("removing hole because it reached above:" + numSpheres);
 
                         //remove last electron from the existing electronArray
                         var randomIndex = Math.floor(Math.random() * holeSpheres.length);

@@ -2,6 +2,8 @@ import * as THREE from 'https://unpkg.com/three@0.163.0/build/three.module.js';
 
 export var recombinationOccured = false;
 
+export var recombinationCount = 0;
+
 export function updateRecombinationStatus(electronSpheres, holeSpheres, minDistance) {
     for (let electron of electronSpheres) {
         for (let hole of holeSpheres) {
@@ -54,10 +56,7 @@ export function recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, sc
                         midpoint = new THREE.Vector3().addVectors(electronSpheres[i].object.position, holeSpheres[j].object.position).multiplyScalar(0.5);
                         electronSpheres[i].targetPosition = midpoint.clone();
                         holeSpheres[j].targetPosition = midpoint.clone(); 
-                        recombinationOccured = true;    
                     }
-                } else {
-                    recombinationOccured = false;
                 }
             }
         }
@@ -128,6 +127,7 @@ export function recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, sc
 }
 
 export function setRecombinationStatus(status) {
+    console.log("set recombination Status to:" + status);
     recombinationOccured = status;
 }
 
@@ -160,13 +160,27 @@ export function recombinationOrbRemove(recombination_orbs, scene) {
 function removeSpherePair(sphere1, sphere2, scene, electronSpheres, holeSpheres) {
     scene.remove(sphere1.object);
     scene.remove(sphere2.object);
-    electronSpheres = electronSpheres.filter(s => s !== sphere1 && s !== sphere2);
-    holeSpheres = holeSpheres.filter(s => s !== sphere1 && s !== sphere2);
+    // electronSpheres = electronSpheres.filter(s => s !== sphere1 && s !== sphere2);
+    // holeSpheres = holeSpheres.filter(s => s !== sphere1 && s !== sphere2);
     
     // Clean up THREE.js objects
     [sphere1, sphere2].forEach(sphere => {
         sphere.object.geometry.dispose();
         sphere.object.material.dispose();
     });
+
+          // Splice them out in-place:
+    const eIndex1 = electronSpheres.indexOf(sphere1);
+    if (eIndex1 >= 0) electronSpheres.splice(eIndex1, 1);
+    const eIndex2 = electronSpheres.indexOf(sphere2);
+    if (eIndex2 >= 0) electronSpheres.splice(eIndex2, 1);
+
+    const hIndex1 = holeSpheres.indexOf(sphere1);
+    if (hIndex1 >= 0) holeSpheres.splice(hIndex1, 1);
+    const hIndex2 = holeSpheres.indexOf(sphere2);
+    if (hIndex2 >= 0) holeSpheres.splice(hIndex2, 1);
+    
     recombinationOccured = true;
+    recombinationCount++;
+    console.log("removed a sphere pair and set reocombination Occurred to true");
 }

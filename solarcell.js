@@ -182,7 +182,7 @@ function init() {
 
     new RGBELoader()
     .load(hdrFile, function (texture) {
-        console.log("HDR File Loaded Successfully:", hdrFile, texture);
+        // console.log("HDR File Loaded Successfully:", hdrFile, texture);
         scene.background = texture;  // This makes HDR the background
         scene.environment = texture; // This applies HDR for lighting/reflection        
     }, undefined, function (error) {
@@ -539,13 +539,13 @@ function update() {
         Recombination.recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, scene, recombination_orbs);
 
         //check if a hole or electron needs to be supplied if they cross only if voltage level is negative
-        sphereCrossed(electronSpheres, 'e');
-        sphereCrossed(holeSpheres, 'h');
-        // if (voltage < 0) {
-        //     sphereCrossed(electronSpheres, 'e');
-        //     sphereCrossed(holeSpheres, 'h');
-        //     // checkGeneratedStatus();
-        // }
+        // sphereCrossed(electronSpheres, 'e');
+        // sphereCrossed(holeSpheres, 'h');
+        if (voltage < 0) {
+            sphereCrossed(electronSpheres, 'e');
+            sphereCrossed(holeSpheres, 'h');
+            // checkGeneratedStatus();
+        }
 
         if (voltage > 0) {
             // maintains balance...of 50 max e and h
@@ -626,6 +626,11 @@ function setUpVRControls() {
     
     controller1.addEventListener('selectstart', onSelectStart);
     controller1.addEventListener('selectend', onSelectEnd);
+
+    // ADD GRIP (squeeze) CONTROLS
+    controller1.addEventListener('squeezestart', onSqueezeStart);
+    controller1.addEventListener('squeezeend', onSqueezeEnd);
+
     controller1.addEventListener('connected', function(event) {
         this.add(buildController(event.data));
     });
@@ -635,6 +640,11 @@ function setUpVRControls() {
 
     controller2.addEventListener('selectstart', onSelectStart);
     controller2.addEventListener('selectend', onSelectEnd);
+
+    // ADD GRIP (squeeze) CONTROLS
+    controller2.addEventListener('squeezestart', onSqueezeStart);
+    controller2.addEventListener('squeezeend', onSqueezeEnd);
+
     controller2.addEventListener('connected', function(event) {
         this.add(buildController(event.data));
     });
@@ -669,7 +679,7 @@ async function initXR(frame) {
     controllerGrip1 = xrSession.requestReferenceSpace('local');
     
     //debug
-    console.log("number of input sources:" + inputSource.length);
+    // console.log("number of input sources:" + inputSource.length);
 
     
 }
@@ -705,6 +715,30 @@ function onSelectStart() {
 function onSelectEnd() {
     this.userData.isSelecting = false;
 }
+
+
+// --- GRIP EVENT HANDLERS FOR SOLAR CELL CONTROL ---
+function onSqueezeStart(event) {
+    const controller = event.target;
+    const controllerPos = new THREE.Vector3();
+    controller.getWorldPosition(controllerPos);
+    const solarPos = new THREE.Vector3();
+    solarCell.getWorldPosition(solarPos);
+    const grabThreshold = 20; // adjust this threshold as needed
+    if (controllerPos.distanceTo(solarPos) < grabThreshold) {
+        controller.attach(solarCell);
+        solarCell.userData.grabbed = true;
+    }
+}
+
+function onSqueezeEnd(event) {
+    const controller = event.target;
+    if (solarCell.userData.grabbed) {
+        scene.attach(solarCell);
+        solarCell.userData.grabbed = false;
+    }
+}
+// --- END GRIP EVENT HANDLERS ---
 
     
 function negative_battery_anim() {
@@ -772,7 +806,7 @@ function positive_battery_anim() {
         if (sphere.value == 'e') {
             if (spherePosition.x < cubeSize.x/2 - 1) {
                 electronSpheres.push({
-                    value: "h",
+                    value: "e",
                     crossReady: true,
                     crossed: false,
                     pause: false,
@@ -834,7 +868,7 @@ function sphereCrossed(typeArray, type) {
     for (var i = 0; i < typeArray.length; i++) {
         var spherePosition = typeArray[i].object.position.x;
         // added voltage > 0 check too since similar processes occuring for both
-        if (voltage < 0 || voltage > 0) {
+        if (voltage < 0) {
             //AZAD CODE
             if (type == 'e') {
                 if (spherePosition > innerBoxSize/2) {
@@ -890,7 +924,7 @@ function sphereCrossed(typeArray, type) {
             if (type == 'e') {
                 e_count = electronSpheres.length;
                 if (e_count > numSpheres ) {
-                    console.log("SOLAR CELL: removing e from the scene beacuse e went over " + numSpheres);
+                    // console.log("SOLAR CELL: removing e from the scene beacuse e went over " + numSpheres);
                     var randomIndex = Math.floor(Math.random() * electronSpheres.length);
                     scene.remove(electronSpheres[randomIndex].object);
                     electronSpheres[randomIndex].object.geometry.dispose();
@@ -900,7 +934,7 @@ function sphereCrossed(typeArray, type) {
             } else if (type == 'h') {
                 h_count= holeSpheres.length;
                 if (h_count > numSpheres ) {
-                    console.log("SOLAR CELL: removing h from the scene beacuse h went over " + numSpheres);
+                    // console.log("SOLAR CELL: removing h from the scene beacuse h went over " + numSpheres);
                     //remove last electron from the existing electronArray
                     var randomIndex = Math.floor(Math.random() * holeSpheres.length);
                     scene.remove(holeSpheres[randomIndex].object);
