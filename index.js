@@ -438,11 +438,11 @@ function update() {
                         // Adjust voltage based on triggers
                         if (state === controllerStates.rightController &&  state.triggerPressed && !lastTriggerState.right) {
                             // Increase voltage (max 0.4)
-                            voltage = Math.min(0.4, voltage + 0.1);
+                            voltage = Math.min(0.4, voltage + 0.08);
                             lastTriggerState.right = state.triggerPressed;
                         } else if (state === controllerStates.leftController &&  state.triggerPressed && !lastTriggerState.left) {
                             // Decrease voltage (min -1.4)
-                            voltage = Math.max(-1.4, voltage - 0.1);
+                            voltage = Math.max(-1.4, voltage - 0.08);
                             lastTriggerState.left = state.triggerPressed;
                         }
 
