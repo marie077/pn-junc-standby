@@ -60,6 +60,7 @@ const perlin = new ImprovedNoise();
 //battery variables
 var positiveBatteryElements = [];
 var negativeBatteryElements = [];
+let batteryAdded = false; // Global flag
 
 // populate boltz distribution table
 var boltz = []; 
@@ -495,6 +496,7 @@ function update() {
         //check if a hole or electron needs to be supplied if they cross only if voltage level is negative
         // sphereCrossed(electronSpheres, 'e');
         // sphereCrossed(holeSpheres, 'h');
+
         if (voltage < 0) {
             sphereCrossed(electronSpheres, 'e');
             sphereCrossed(holeSpheres, 'h');
@@ -507,7 +509,7 @@ function update() {
             // sphereCrossed(holeSpheres, 'h');
             // console.log(Recombination.recombinationOccured);
             console.log("recombination count when: " + Recombination.recombinationCount);
-            if (Recombination.recombinationOccured) {
+            if (Recombination.recombinationOccured && !batteryAdded) {
                 // console.log("recombination occured");
                 var e_position = new THREE.Vector3(cubeSize.x/2 + 50, 0, 0);
                 var electron = SphereUtil.createSphereAt(e_position, 0x1F51FF, false);
@@ -521,7 +523,11 @@ function update() {
                 hole.value = "h";
                 positiveBatteryElements.push(hole);
                 Recombination.setRecombinationStatus(false);
+                batteryAdded = true;
                 // console.log("length of pos array" + positiveBatteryElements.length);
+            } else {
+                batteryAdded = false;
+                console.log("recombination check false, has not occurred yet");
             }
         }
         
@@ -535,7 +541,11 @@ function update() {
 
         //UPDATE SPHERE POSITION
         updateSpherePosition();
-    
+
+        let newUpdatedArrays = controlSphereAmount(electronSpheres, holeSpheres);
+        electronSpheres = newUpdatedArrays.electronSpheres;
+        holeSpheres = newUpdatedArrays.holeSpheres;
+        
         // checkBounds(holeSpheres, electronSpheres, hBoundsMin, hBoundsMax, eBoundsMin, eBoundsMax);
         checkBounds(holeSpheres, electronSpheres, boxMin, boxMax);
         // orbitControls.update();
@@ -784,6 +794,30 @@ function positive_battery_anim() {
     }
     
 }
+
+function controlSphereAmount(electronSpheres, holeSpheres) {
+    var e_array_length = electronSpheres.length;
+    var h_array_length = holeSpheres.length;
+
+
+    if (e_array_length > numSpheres) {
+        var randomIndex = Math.floor(Math.random() * electronSpheres.length);
+        scene.remove(electronSpheres[randomIndex].object);
+        electronSpheres[randomIndex].object.geometry.dispose();
+        electronSpheres[randomIndex].object.material.dispose();
+        electronSpheres.splice(randomIndex, 1);
+    }
+    if (h_array_length > numSpheres) {
+        var randomIndex = Math.floor(Math.random() * holeSpheres.length);
+        scene.remove(holeSpheres[randomIndex].object);
+        holeSpheres[randomIndex].object.geometry.dispose();
+        holeSpheres[randomIndex].object.material.dispose();
+        holeSpheres.splice(randomIndex, 1);
+    }
+
+    return {electronSpheres, holeSpheres};
+}
+
 
 //keeps track of the newly created electrons/holes after a sphere crosses to the other side
 function sphereCrossed(typeArray, type) { 

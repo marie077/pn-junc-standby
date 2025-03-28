@@ -577,6 +577,11 @@ function update() {
 
         //UPDATE SPHERE POSITION
         updateSpherePosition();
+
+        let newUpdatedArrays = controlSphereAmount(electronSpheres, holeSpheres);
+        electronSpheres = newUpdatedArrays.electronSpheres;
+        holeSpheres = newUpdatedArrays.holeSpheres;
+
     
         // checkBounds(holeSpheres, electronSpheres, hBoundsMin, hBoundsMax, eBoundsMin, eBoundsMax);
         checkBounds(holeSpheres, electronSpheres, boxMin, boxMax);
@@ -946,6 +951,30 @@ function sphereCrossed(typeArray, type) {
         }
     }
 }
+
+function controlSphereAmount(electronSpheres, holeSpheres) {
+    var e_array_length = electronSpheres.length;
+    var h_array_length = holeSpheres.length;
+
+
+    if (e_array_length > numSpheres) {
+        var randomIndex = Math.floor(Math.random() * electronSpheres.length);
+        scene.remove(electronSpheres[randomIndex].object);
+        electronSpheres[randomIndex].object.geometry.dispose();
+        electronSpheres[randomIndex].object.material.dispose();
+        electronSpheres.splice(randomIndex, 1);
+    }
+    if (h_array_length > numSpheres) {
+        var randomIndex = Math.floor(Math.random() * holeSpheres.length);
+        scene.remove(holeSpheres[randomIndex].object);
+        holeSpheres[randomIndex].object.geometry.dispose();
+        holeSpheres[randomIndex].object.material.dispose();
+        holeSpheres.splice(randomIndex, 1);
+    }
+
+    return {electronSpheres, holeSpheres};
+}
+
 
 
 function addAcceleration(type, innerBoxSize, time, scalar) {
