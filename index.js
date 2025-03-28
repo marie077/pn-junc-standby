@@ -506,6 +506,7 @@ function update() {
             // maintains balance...of 50 max e and h
             // sphereCrossed(electronSpheres, 'e');
             // sphereCrossed(holeSpheres, 'h');
+            console.log(Recombination.recombinationOccured);
             if (Recombination.recombinationOccured) {
                 var e_position = new THREE.Vector3(cubeSize.x/2 + 50, 0, 0);
                 var electron = SphereUtil.createSphereAt(e_position, 0x1F51FF, false);
@@ -518,6 +519,7 @@ function update() {
                 scene.add(hole.object);
                 hole.value = "h";
                 positiveBatteryElements.push(hole);
+                Recombination.recombinationOccured = false;
             }
         }
         
