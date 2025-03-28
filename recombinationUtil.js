@@ -127,6 +127,10 @@ export function recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, sc
     }
 }
 
+export function setRecombinationStatus(status) {
+    recombinationOccured = status;
+}
+
 export function checkCollision(electron, hole) {
     // collision check...
     // if two are created from generation then they can't recombine

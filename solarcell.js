@@ -563,7 +563,7 @@ function update() {
                 scene.add(hole.object);
                 hole.value = "h";
                 positiveBatteryElements.push(hole);
-                Recombination.recombinationOccured = false;
+                Recombination.setRecombinationStatus(false);
             }
         }
         
