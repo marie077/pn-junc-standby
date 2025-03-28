@@ -62,6 +62,8 @@ var positiveBatteryElements = [];
 var negativeBatteryElements = [];
 let batteryAdded = false; // Global flag
 
+let voltageChangedOnce = false;
+
 // populate boltz distribution table
 var boltz = []; 
 
@@ -108,6 +110,15 @@ var scene = new THREE.Scene();
 init();
 
 update();
+
+setInterval(() => {
+    let generatedPair = Generation.generatePair(cubeSize);
+    scene.add(generatedPair.orbSphere);
+    scene.add(generatedPair.electron.object);
+    scene.add(generatedPair.hole.object);
+    generatedPairs.push(generatedPair);
+}, 2000);
+
 
 setInterval(() => {
     let generatedPair = Generation.generatePair(cubeSize);
@@ -542,10 +553,10 @@ function update() {
         //UPDATE SPHERE POSITION
         updateSpherePosition();
 
-        let newUpdatedArrays = controlSphereAmount(electronSpheres, holeSpheres);
-        electronSpheres = newUpdatedArrays.electronSpheres;
-        holeSpheres = newUpdatedArrays.holeSpheres;
-        
+        // let newUpdatedArrays = controlSphereAmount(electronSpheres, holeSpheres);
+        // electronSpheres = newUpdatedArrays.electronSpheres;
+        // holeSpheres = newUpdatedArrays.holeSpheres;
+
         // checkBounds(holeSpheres, electronSpheres, hBoundsMin, hBoundsMax, eBoundsMin, eBoundsMax);
         checkBounds(holeSpheres, electronSpheres, boxMin, boxMax);
         // orbitControls.update();
@@ -823,17 +834,22 @@ function controlSphereAmount(electronSpheres, holeSpheres) {
 function sphereCrossed(typeArray, type) { 
     var e_count = 0;
     var h_count = 0;
-    
+
+    if (!voltageChangedOnce) {
+        // e_count = electronSpheres.length;
+        // h_count = holeSpheres.length;
+        voltageChangedOnce = true;
+    }
     for (var i = 0; i < typeArray.length; i++) {
         var spherePosition = typeArray[i].object.position.x;
         // added voltage > 0 check too since similar processes occuring for both
-        if (voltage < 0 || voltage > 0) {
+        if (voltage < 0) {
             //AZAD CODE
-            if (type == 'e') {
+            if (type == 'e') {    
                 if (spherePosition > innerBoxSize/2) {
                     e_count= e_count+1;
                     //takes out electrons if count exceeds 50 max
-                    if (e_count > numSpheres ) {
+                    if (e_count > numSpheres) {
                         e_count= e_count-1;
                         //console.log('e_count=',e_count);
                         var position = new THREE.Vector3(cubeSize.x/2 - 5, 0, 0);

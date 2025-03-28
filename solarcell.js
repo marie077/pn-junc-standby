@@ -578,9 +578,9 @@ function update() {
         //UPDATE SPHERE POSITION
         updateSpherePosition();
 
-        let newUpdatedArrays = controlSphereAmount(electronSpheres, holeSpheres);
-        electronSpheres = newUpdatedArrays.electronSpheres;
-        holeSpheres = newUpdatedArrays.holeSpheres;
+        // let newUpdatedArrays = controlSphereAmount(electronSpheres, holeSpheres);
+        // electronSpheres = newUpdatedArrays.electronSpheres;
+        // holeSpheres = newUpdatedArrays.holeSpheres;
 
     
         // checkBounds(holeSpheres, electronSpheres, hBoundsMin, hBoundsMax, eBoundsMin, eBoundsMax);
