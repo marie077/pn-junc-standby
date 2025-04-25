@@ -198,7 +198,7 @@ function init() {
     // GUI
     gui = new dat.GUI({autoPlace: false});
     gui.domElement.style.position = 'relative';
-    gui.domElement.style.right = '-450px'; // 👈 This moves it to the right
+    gui.domElement.style.right = '0px';
     gui.domElement.style.top = '10px';
 
     cameraControls = {
