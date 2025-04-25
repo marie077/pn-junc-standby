@@ -152,8 +152,6 @@ function init() {
     
     container = document.getElementById('three-container-scene-1');
    
-	// scene.background = new THREE.Color(0x121212);
-    // scene.background = new THREE.Color(0xFFFFFF); // black background
     new RGBELoader()
     .load(hdrFile, function (texture) {
         scene.background = texture;  // This makes HDR the background
@@ -248,9 +246,6 @@ function init() {
 
     // window resize handler
     window.addEventListener( 'resize', onWindowResize);
-
-
-    
 
     loader.load( 'https://unpkg.com/three@0.163.0/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
         loader._font = font;
@@ -413,9 +408,7 @@ function init() {
 }
 
 function update() {
-    renderer.setAnimationLoop( function(timestamp, frame) {
-        // updateId = requestAnimationFrame( update );
-        
+    renderer.setAnimationLoop( function(timestamp, frame) {        
 		if (frame) {
             const session = frame.session;
             if (session) {
@@ -464,17 +457,9 @@ function update() {
             }
         }
 
-    
-
         var currentTime = performance.now();
         var time = clock.getDelta()/15;
         scene.remove(innerCube);
-
-        // console.log("electron #:" + electronSpheres.length);
-        // console.log("hole #:" + holeSpheres.length);
-
-        //add innercube for electric field
-                                            
         // update inner box size based on formula using voltage
         innerBoxSize = 24.2*(0.58*(Math.sqrt(9.2 - voltage * 1.13 /0.05)));
 
@@ -507,21 +492,12 @@ function update() {
         //RECOMBINATION ANIMATION
         Recombination.recombinationAnim(electronSpheres, holeSpheres, innerBoxSize, scene, recombination_orbs);
 
-        //check if a hole or electron needs to be supplied if they cross only if voltage level is negative
-        // sphereCrossed(electronSpheres, 'e');
-        // sphereCrossed(holeSpheres, 'h');
-
         if (voltage < 0) {
             sphereCrossed(electronSpheres, 'e');
             sphereCrossed(holeSpheres, 'h');
-            // checkGeneratedStatus();
         }
 
         if (voltage > 0) {
-            // maintains balance...of 50 max e and h
-            // sphereCrossed(electronSpheres, 'e');
-            // sphereCrossed(holeSpheres, 'h');
-            // console.log(Recombination.recombinationOccured);
             console.log("recombination count when: " + Recombination.recombinationCount);
             if (Recombination.recombinationOccured && !batteryAdded) {
                 // console.log("recombination occured");
@@ -555,14 +531,7 @@ function update() {
 
         //UPDATE SPHERE POSITION
         updateSpherePosition();
-
-        // let newUpdatedArrays = controlSphereAmount(electronSpheres, holeSpheres);
-        // electronSpheres = newUpdatedArrays.electronSpheres;
-        // holeSpheres = newUpdatedArrays.holeSpheres;
-
-        // checkBounds(holeSpheres, electronSpheres, hBoundsMin, hBoundsMax, eBoundsMin, eBoundsMax);
         checkBounds(holeSpheres, electronSpheres, boxMin, boxMax);
-        // orbitControls.update();
 		updateCamera();
         renderer.render( scene, camera );
 		
@@ -643,15 +612,10 @@ function setUpVRControls() {
 
 // Handle controller input
 async function initXR(frame) {
-
-
     const xrSession = await navigator.xr.requestSession('immersive-vr');
 
     const inputSource = xrSession.inputSources[0];
 	controllerGrip1 = xrSession.requestReferenceSpace('local');
-	
-	//debug
-    
 }
 
 function updateCamera() {
@@ -809,30 +773,6 @@ function positive_battery_anim() {
     
 }
 
-function controlSphereAmount(electronSpheres, holeSpheres) {
-    var e_array_length = electronSpheres.length;
-    var h_array_length = holeSpheres.length;
-
-
-    if (e_array_length > numSpheres) {
-        var randomIndex = Math.floor(Math.random() * electronSpheres.length);
-        scene.remove(electronSpheres[randomIndex].object);
-        electronSpheres[randomIndex].object.geometry.dispose();
-        electronSpheres[randomIndex].object.material.dispose();
-        electronSpheres.splice(randomIndex, 1);
-    }
-    if (h_array_length > numSpheres) {
-        var randomIndex = Math.floor(Math.random() * holeSpheres.length);
-        scene.remove(holeSpheres[randomIndex].object);
-        holeSpheres[randomIndex].object.geometry.dispose();
-        holeSpheres[randomIndex].object.material.dispose();
-        holeSpheres.splice(randomIndex, 1);
-    }
-
-    return {electronSpheres, holeSpheres};
-}
-
-
 //keeps track of the newly created electrons/holes after a sphere crosses to the other side
 function sphereCrossed(typeArray, type) { 
     var e_count = 0;
@@ -979,22 +919,6 @@ function updateSpherePosition() {
         }
     }    
 }
-
-
-function checkCollision(electron, hole) {
-    // collision check...
-    // if two are created from generation then they can't recombine
-    var distance = new Vector3().subVectors(electron.object.position, hole.object.position).length();
-    var coll_dist = 20;
-    if (electron.recombine && hole.recombine) {
-        if (distance <= coll_dist) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
-
 
 function scatter(currentTime) {
      // implement scatter movement
