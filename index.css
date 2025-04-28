@@ -1,3 +1,7 @@
+:root {
+	--brand: #fff7ae;
+	--bgGrey: #575757;
+}
 
 #body_parent {
 	background-color: #121212;
@@ -207,45 +211,71 @@ body {
   }
 
 
-  input[type="range"] {
-    -webkit-appearance: none;
-    width: 80%;
-    height: 10px;
-    background: #337ab7; /* Blue background */
-    border-radius: 5px;
-    outline: none;
-    opacity: 0.9;
-    transition: opacity 0.15s ease-in-out;
+  
+
+/* Range slider */
+
+.sliderContainer {
+	margin-top: 32px;
+	margin-bottom: 32px;
 }
 
-input[type="range"]:hover {
-    opacity: 1;
+.sliderLabel {
+	color: white;
 }
 
-/* Customizing the thumb */
+input[type="range"] {
+	-webkit-appearance: none;
+	width: 240px;
+	height: 6px;
+	background: #575757;
+	border-radius: 5px;
+	outline: none;
+	transition: background 0.3s;
+	position: relative;
+}
+
 input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 30px;
-    background: white;
-    border: 2px solid black;
-    border-radius: 5px;
-    cursor: pointer;
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	background: #fff7ae;
+	border-radius: 50%;
+	cursor: pointer;
+	position: relative;
+	box-shadow: none;
 }
 
 input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 30px;
-    background: white;
-    border: 2px solid black;
-    border-radius: 5px;
-    cursor: pointer;
+	width: 20px;
+	height: 20px;
+	background: #fff7ae;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: none;
 }
 
-.input-control {
-	margin-top: 3em;
+input[type="range"]::-moz-range-progress {
+	background: #fff7ae;
+	height: 6px;
+	border-radius: 5px;
+}
+
+input[type="range"]::-ms-fill-lower {
+	background: #fff7ae;
+	border-radius: 5px;
+}
+
+datalist {
 	display: flex;
+	justify-content: space-between;
+	color: white;
+	width: 80%;
+}
+
+datalist option {
+	font-size: 0.8rem;
 }
 
 @font-face {
