@@ -8,6 +8,8 @@ var scatterTimeMean = 2;
 const perlin = new ImprovedNoise();
 var numSpheres = 50;
 
+var holeColor = 0xd55e00
+var electronColor = 0x56b4e9;
 
 
 
@@ -83,8 +85,8 @@ export function generatePair(cubeSize) {
         THREE.MathUtils.randFloat(-cubeSize.y/2 + 1, cubeSize.y/2 - 1), 
         THREE.MathUtils.randFloat(-cubeSize.z/2 + 1, cubeSize.z/2 - 1));
     // holes and electron are created at the same position
-    let hole = SphereUtil.createSphereAt(position.clone().add(new THREE.Vector3(2,0,0)), 0xFF3131, false);
-    let electron = SphereUtil.createSphereAt(position.clone(), 0x1F51FF, false);
+    let hole = SphereUtil.createSphereAt(position.clone().add(new THREE.Vector3(2,0,0)), holeColor, false);
+    let electron = SphereUtil.createSphereAt(position.clone(), electronColor, false);
     
     //set initial generation values to hole and electrons
     hole.velocity = new THREE.Vector3(-0.02, 0, 0);
@@ -92,7 +94,7 @@ export function generatePair(cubeSize) {
 
     //generate orb
     const orbGeo = new THREE.SphereGeometry(2, 32, 32);
-    const orbMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5});
+    const orbMaterial = new THREE.MeshBasicMaterial({ color: 0x009e73, transparent: true, opacity: 0.5});
     const orbSphere = new THREE.Mesh(orbGeo, orbMaterial);
     
     //calculate orb position using midpoint of pair and set position
@@ -117,8 +119,8 @@ export function solarGeneratePair(solarCell, trapezoid_top, trapezoid_height, cu
     }
 
      // holes and electron are created at the same position
-     let hole = SphereUtil.createSphereAt(position.clone().add(new THREE.Vector3(2,0,0)), 0xFF3131, false);
-     let electron = SphereUtil.createSphereAt(position.clone(), 0x1F51FF, false);
+     let hole = SphereUtil.createSphereAt(position.clone().add(new THREE.Vector3(2,0,0)), holeColor, false);
+     let electron = SphereUtil.createSphereAt(position.clone(), electronColor, false);
      
      //set initial generation values to hole and electrons
      hole.velocity = new THREE.Vector3(-0.02, 0, 0);
@@ -126,7 +128,7 @@ export function solarGeneratePair(solarCell, trapezoid_top, trapezoid_height, cu
  
      //generate orb
      const orbGeo = new THREE.SphereGeometry(2, 32, 32);
-     const orbMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5});
+     const orbMaterial = new THREE.MeshBasicMaterial({ color: 0x009e73, transparent: true, opacity: 0.5});
      const orbSphere = new THREE.Mesh(orbGeo, orbMaterial);
      
      //calculate orb position using midpoint of pair and set position

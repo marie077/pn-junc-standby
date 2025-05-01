@@ -25,6 +25,9 @@ const voltageControl = document.getElementById('voltage');
 var minScalar = 0.22;
 var maxScalar = 0.88;
 var cube1;
+var holeColor = 0xd55e00
+var electronColor = 0x56b4e9;
+
 
 
 //PN Junction Initial Variables
@@ -46,10 +49,20 @@ var innerCubeGeometry;
 var innerCubeMaterial;
 var innerCube;
 var voltage = 0.0;
+const arrowColor = 0xf0e442;
 
-var voltageText = "Voltage: " + voltage;
-var voltageTextMesh;
-var textgeometry;
+//text components in 3d scene
+var positiveSign = "(+)";
+var negativeSign = "(-)";
+var chargeTextMesh_pos;
+var chargeTextMesh_neg;
+var positiveSignGeometry;
+var negativeSignGeometry;
+
+var eSignText = "E";
+var eSignTextMesh;
+var eSignGeometry;
+
 const TRIGGER_THRESHOLD = 0.1;
 
 
@@ -249,15 +262,37 @@ function init() {
 
     loader.load( 'https://unpkg.com/three@0.163.0/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
         loader._font = font;
-        textgeometry = new TextGeometry( voltageText, {
+        positiveSignGeometry = new TextGeometry( positiveSign, {
             font: font,
             size: 5,
             depth: 0.5
         } );
-        const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        voltageTextMesh = new THREE.Mesh(textgeometry, textMaterial);
-        voltageTextMesh.position.set(-20, 60, 0); // Position it where visible in VR
-        scene.add(voltageTextMesh);
+        negativeSignGeometry = new TextGeometry( negativeSign, {
+            font: font,
+            size: 5,
+            depth: 0.5
+        } );
+        eSignGeometry = new TextGeometry(eSignText, {
+            font: font,
+            size: 5,
+            depth: 0.5
+        });
+
+        const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff});
+        const eTextMaterial = new THREE.MeshBasicMaterial({color: arrowColor})
+
+        eSignTextMesh = new THREE.Mesh(eSignGeometry, eTextMaterial);
+        eSignTextMesh.position.set(-15, 3, 0); //position E text on top of the charge arrow
+
+        chargeTextMesh_pos = new THREE.Mesh(positiveSignGeometry, textMaterial);
+        chargeTextMesh_pos.position.set(-43, -65, 0); // Position positive sign on left side of battery
+
+        chargeTextMesh_neg = new THREE.Mesh(negativeSignGeometry, textMaterial);
+        chargeTextMesh_neg.position.set(35, -65, 0); //position negative sign on right side of battery
+
+        scene.add(eSignTextMesh);
+        scene.add(chargeTextMesh_pos);
+        scene.add(chargeTextMesh_neg);
     
     } );
 
@@ -355,7 +390,7 @@ function init() {
     for (var i = 0; i < numSpheres; i++) {
         // change this to boltzmann distributed velocity
         randomVelocity = SphereUtil.getBoltzVelocity(boltz);
-        var holes = SphereUtil.createSphere(i, -(cubeSize.x/2) + 1, -2, 0xFF3131, false, cubeSize);
+        var holes = SphereUtil.createSphere(i, -(cubeSize.x/2) + 1, -2, holeColor, false, cubeSize);
         scene.add(holes.object);
         createIon(-(cubeSize.x/2) + 1, -2, 0xffffff, 'acceptor');
         holeSpheres.push({
@@ -383,7 +418,7 @@ function init() {
     for (var i = 0; i < numSpheres; i++) {
         randomVelocity = SphereUtil.getBoltzVelocity(boltz);
         createIon(2, (cubeSize.x/2) - 1, 0xffffff, 'donor');
-        var electron = SphereUtil.createSphere(i, 2, (cubeSize.x/2) - 1, 0x1F51FF, false, cubeSize);
+        var electron = SphereUtil.createSphere(i, 2, (cubeSize.x/2) - 1, electronColor, false, cubeSize);
         scene.add(electron.object);
         electronSpheres.push({
             value: "e", 
@@ -441,17 +476,6 @@ function update() {
                             voltage = Math.max(-1.4, voltage - 0.08);
                             lastTriggerState.left = state.triggerPressed;
                         }
-
-                        if (voltageTextMesh) {
-                            voltageTextMesh.geometry.dispose();
-                            textgeometry = new TextGeometry('Voltage: ' + voltage.toFixed(2), {
-                                font: loader._font, // Use cached font
-                                size: 5,
-                                depth: 0.5
-                            });
-                            voltageTextMesh.geometry = textgeometry;    
-                        }
-
                     }
                 });
             }
@@ -474,9 +498,9 @@ function update() {
 
         var origin = new THREE.Vector3(innerBoxSize/2, 0, 0 );
         const length = innerBoxSize;
-        const hex = 0xffff00;
+        
 
-        updateArrow(origin, length, hex);
+        updateArrow(origin, length, arrowColor);
     
         //SCATTER (update velocities for scattering)
         scatter(currentTime); 
@@ -502,13 +526,13 @@ function update() {
             if (Recombination.recombinationOccured && !batteryAdded) {
                 // console.log("recombination occured");
                 var e_position = new THREE.Vector3(cubeSize.x/2 + 50, 0, 0);
-                var electron = SphereUtil.createSphereAt(e_position, 0x1F51FF, false);
+                var electron = SphereUtil.createSphereAt(e_position, electronColor, false);
                 scene.add(electron.object);
                 electron.value = "e";
                 positiveBatteryElements.push(electron);
                     
                 var h_position = new THREE.Vector3(-cubeSize.x/2 - 50, 0, 0);
-                var hole = SphereUtil.createSphereAt(h_position, 0xFF3131, false);
+                var hole = SphereUtil.createSphereAt(h_position, holeColor, false);
                 scene.add(hole.object);
                 hole.value = "h";
                 positiveBatteryElements.push(hole);
@@ -796,7 +820,7 @@ function sphereCrossed(typeArray, type) {
                         e_count= e_count-1;
                         //console.log('e_count=',e_count);
                         var position = new THREE.Vector3(cubeSize.x/2 - 5, 0, 0);
-                        var electron = SphereUtil.createSphereAt(position, 0x1F51FF, false);
+                        var electron = SphereUtil.createSphereAt(position, electronColor, false);
                         scene.add(electron.object);
                     
                         electron.value = "e";
@@ -822,7 +846,7 @@ function sphereCrossed(typeArray, type) {
                             //console.log('h_count=',h_count);
                         h_count= h_count-1;    
                         var position = new THREE.Vector3(-cubeSize.x/2 + 5, 0, 0);
-                        var hole = SphereUtil.createSphereAt(position, 0xFF3131, false);
+                        var hole = SphereUtil.createSphereAt(position, holeColor, false);
                         scene.add(hole.object);
                         hole.value = "h";
                         typeArray[i].crossed = true;
